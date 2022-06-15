@@ -7,17 +7,24 @@ using System.Threading.Tasks;
 
 namespace Adapter
 {
-    public class FlacAudioPlayerAdapter : IAudioPlayer
+    public class FlacAudioPlayerAdapter : LegacyAudioPlayer
     {
         FlacAudioPlayer flacAudioPlayer { get; set; }
-        public FlacAudioPlayerAdapter()
+        
+        public override void SetAudioFileLocation(string audioFileLocation)
         {
-            this.flacAudioPlayer = new FlacAudioPlayer(9600);
+            this.flacAudioPlayer = new FlacAudioPlayer(9600, audioFileLocation);
         }
 
-        public void Play(string filePath, string fileType)
+        public override void StartPlayAudio()
         {
-            this.flacAudioPlayer.PlayFlac(filePath);
+            this.flacAudioPlayer.PlayFlac();
         }
+
+        public override void StopPlayAudio()
+        {
+            this.flacAudioPlayer.Pause();
+        }
+
     }
 }

@@ -8,15 +8,23 @@ namespace Adapter.OtherAudioPlayers
 {
     public class FlacAudioPlayer
     {
-        public FlacAudioPlayer(int baudRate)
-        {
+        private readonly int baudRate;
+        private readonly string audioFileLocation;
 
+        public FlacAudioPlayer(int baudRate, string audioFileLocation)
+        {
+            this.baudRate = baudRate;
+            this.audioFileLocation = audioFileLocation;
         }
 
-        public void PlayFlac(string path)
+        public void PlayFlac()
         {
-            Console.WriteLine($"paying flac file:{path} from {nameof(FlacAudioPlayer)}");
+            Console.WriteLine($"playing flac file:{this.audioFileLocation} at baudrate:{baudRate} from {nameof(FlacAudioPlayer)}");
         }
 
+        public void Pause()
+        {
+            Console.WriteLine($"paused flac file:{this.audioFileLocation} from {nameof(FlacAudioPlayer)}");
+        }
     }
 }
