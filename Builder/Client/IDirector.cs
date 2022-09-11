@@ -22,14 +22,11 @@ namespace Builder.Client
         }
 
         public RCCar Construct()
-        {
-            _builder.AddBoard(new Arduino());
-            _builder.AddMotors(1);
-            _builder.AddWheelType(WheelType.Simple);
-            _builder.AddWheels(4);
-
-            return _builder.Build();
-        }
+            => _builder.AddBoard(new Arduino())
+                .AddMotors(1)
+                .AddWheelType(WheelType.Simple)
+                .AddWheels(4)
+                .Build();
     }
 
     public class OmnidirectionalDirector : IDirector
@@ -42,14 +39,11 @@ namespace Builder.Client
         }
 
         public RCCar Construct()
-        {
-            _builder.AddBoard(new UDOO());
-            _builder.AddMotors(4);
-            _builder.AddWheelType(WheelType.Omnidirectional);
-            _builder.AddWheels(4);
-
-            return _builder.Build();
-        }
+            => _builder.AddBoard(new UDOO())
+                .AddMotors(4)
+                .AddWheelType(WheelType.Omnidirectional)
+                .AddWheels(4)
+                .Build();
     }
 
     public class DifferentialDirector : IDirector
@@ -62,13 +56,10 @@ namespace Builder.Client
         }
 
         public RCCar Construct()
-        {
-            _builder.AddBoard(new UDOO());
-            _builder.AddMotors(2);
-            _builder.AddWheelType(WheelType.Simple);
-            _builder.AddWheels(6);
-
-            return _builder.Build();
-        }
+            => _builder.AddBoard(new UDOO())
+                .AddMotors(2)
+                .AddWheelType(WheelType.Simple)
+                .AddWheels(6)
+                .Build();
     }
 }

@@ -9,8 +9,8 @@ namespace Builder
 {
     public class RCCar
     {
-        public Board Board { get; set; }
-        public List<Wheel> Wheels { get; set; }
+        public Board Board { get; }
+        public List<Wheel> Wheels { get; }
         public int NumberOfMotors { get; }
 
         public RCCar(Board board, List<Wheel> wheels, int numberOfMotors)

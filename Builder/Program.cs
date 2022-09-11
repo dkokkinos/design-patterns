@@ -13,17 +13,17 @@ namespace AbstractFactory
             IDirector director = new AckermanDirector(builder);
 
             var client = new Client(director);
-            client.PlayWithTheCar();
+            client.UseTheCar();
 
             director = new OmnidirectionalDirector(builder);
 
             client = new Client(director);
-            client.PlayWithTheCar();
+            client.UseTheCar();
 
             director = new DifferentialDirector(builder);
 
             client = new Client(director);
-            client.PlayWithTheCar();
+            client.UseTheCar();
         }
 
         public class Client 
@@ -35,12 +35,11 @@ namespace AbstractFactory
                 _director = director;
             }
 
-            public void PlayWithTheCar()
+            public void UseTheCar()
             {
                 var rccar = _director.Construct();
-                Console.WriteLine($"Playing with the {rccar} rccar");
+                Console.WriteLine($"Using the {rccar} rccar");
             }
-
         }
     }
 }
