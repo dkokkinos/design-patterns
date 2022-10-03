@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Observer
 {
-    public interface IPartObserver
+    public interface IObserver
     {
-        void OnPropertyChanged(IPart part, string propertyName, object newValue);
+        void Update(IWeatherData state);
     }
 }

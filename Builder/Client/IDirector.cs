@@ -12,11 +12,11 @@ namespace Builder.Client
         RCCar Construct();
     }
 
-    public class AckermanDirector : IDirector
+    public class AckermannDirector : IDirector
     {
         private readonly IRCCarBuilder _builder;
 
-        public AckermanDirector(IRCCarBuilder builder)
+        public AckermannDirector(IRCCarBuilder builder)
         {
             _builder = builder;
         }

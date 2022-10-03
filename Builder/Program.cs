@@ -10,7 +10,7 @@ namespace AbstractFactory
         public static void Main()
         {
             var builder = new RCCarBuilder();
-            IDirector director = new AckermanDirector(builder);
+            IDirector director = new AckermannDirector(builder);
 
             var client = new Client(director);
             client.UseTheCar();

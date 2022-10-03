@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Observer
 {
-    public interface IStructure : IPartObserver
+    public interface IWeatherData
     {
-        ICollection<IPart> Parts { get; set; }
+        int GetHumidity();
+        int GetAirSpeed();
+        int GetTemperature();
     }
 }
