@@ -29,7 +29,7 @@ namespace Observer
                 observer.Update(_state);
         }
 
-        public void DataReceivedFromArduino(int humidity, int airspeed, int temperature)
+        public void DataReceivedFromSensors(int humidity, int airspeed, int temperature)
         {
             _state = new ArduinoWeatherStationData(humidity, airspeed, temperature);
             NotifyObservers();

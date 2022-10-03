@@ -16,8 +16,8 @@ namespace Observer
             weatherStation.AddObserver(display);
             weatherStation.AddObserver(fanController);
 
-            weatherStation.DataReceivedFromArduino(10, 20, 25);
-            weatherStation.DataReceivedFromArduino(12, 22, 32);
+            weatherStation.DataReceivedFromSensors(10, 20, 25);
+            weatherStation.DataReceivedFromSensors(12, 22, 32);
         }
 
 
