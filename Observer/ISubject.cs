@@ -8,10 +8,10 @@ namespace Observer
 {
     public interface ISubject
     {
-        public void AddObserver(IObserver observer);
+        void AddObserver(IObserver observer);
 
-        public void RemoveObserver(IObserver observer);
+        void RemoveObserver(IObserver observer);
 
-        public void NotifyObservers();
+        void NotifyObservers();
     }
 }
