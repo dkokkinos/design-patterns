@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Decorator
 {
-    public interface ILogger
+    public interface ICache
     {
-        void Log(string text);
+        string Get(string key);
+        void Set(string key, string value);
+        bool Exists(string key);
     }
 }
