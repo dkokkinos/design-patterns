@@ -1,0 +1,14 @@
+[
+  {
+    "Name": "productA",
+    "Orders": 10
+  },
+  {
+    "Name": "productB",
+    "Orders": 20
+  },
+  {
+    "Name": "productC",
+    "Orders": 14
+  }
+]
