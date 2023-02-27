@@ -1,4 +1,5 @@
-﻿using Iterator.VehicleParts;
+﻿using Iterator.Iterators;
+using Iterator.VehicleParts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,12 +24,12 @@ namespace Iterator.Client
 
         public Iterator<VehiclePart> CreatePartIterator()
         {
-            return new Plugin.VehiclePartsIterator(this.Parts);
+            return new VehiclePartsIterator(this.Parts);
         }
 
         public Iterator<VehiclePart> CreateMechanicalPartIterator()
         {
-            return new Plugin.VehicleMechanicalPartsIterator(this.Parts);
+            return new VehicleMechanicalPartsIterator(this.Parts);
         }
 
     }

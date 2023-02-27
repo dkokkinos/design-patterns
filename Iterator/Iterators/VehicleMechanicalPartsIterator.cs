@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Iterator.Plugin
+namespace Iterator.Iterators
 {
     public class VehicleMechanicalPartsIterator : VehiclePartsIterator
     {
-        
-        public VehicleMechanicalPartsIterator(ICollection<VehiclePart> parts) : base (parts)
+
+        public VehicleMechanicalPartsIterator(ICollection<VehiclePart> parts) : base(parts)
         {
-            base.Parts = parts.Where(x => x is MechanicalVehiclePart).Cast<VehiclePart>().ToList();
+            Parts = parts.Where(x => x is MechanicalVehiclePart).Cast<VehiclePart>().ToList();
 
         }
 
