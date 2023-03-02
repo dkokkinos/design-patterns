@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Iterator.Client
+namespace Iterator.CarCompanyExample
 {
-    public abstract class MechanicalVehiclePart : VehiclePart
+    public interface Iterator
     {
-
+        bool MoveNext();
+        object Current { get; }
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Iterator.Client
+namespace Iterator.CarCompanyExample
 {
-    public abstract class VehiclePart
+    public abstract class Company : Iterable
     {
-
+        public abstract Iterator CreateIterator();
     }
 }
