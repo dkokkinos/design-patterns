@@ -6,33 +6,32 @@ using System.Threading.Tasks;
 
 namespace State
 {
-    public class VendingMachine : ISubject
+    public class VendingMachine
     {
+        public List<Product> Products;
         public State CurrentState { get; private set; }
 
-        public VendingMachine()
+        public VendingMachine(List<Product> products)
         {
-            this.CurrentState = new SelectProductState();
+            Products = products;
+            CurrentState = new IdleState(this);
         }
 
-        public void GiveMoney(decimal money)
-        {
-            this.CurrentState.GiveMoney(money, this);
-        }
+        public string SelectedProductCode { get; set; }
 
-        public void ProductSelected(object product)
-        {
-            this.CurrentState.ProductSelected(product, this);
-        }
+        public void SelectProduct(string productCode)
+            => CurrentState.SelectProduct(productCode);
 
-        public void CustomerGotTheProduct()
-        {
-            this.CurrentState.CustomerGotTheProduct(this);
-        }
+        public void InsertMoney(decimal amount)
+            => CurrentState.InsertMoney(amount);
+
+        public void DispenseProduct()
+            => CurrentState.DispenseProduct();
+
+        public void Refill(List<Product> products)
+            => CurrentState.Refill(products);
 
         public void SetState(State state)
-        {
-            this.CurrentState = state;
-        }
+            => CurrentState = state;
     }
 }

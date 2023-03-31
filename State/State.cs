@@ -8,21 +8,21 @@ namespace State
 {
     public abstract class State
     {
-        public virtual void GiveMoney(decimal money, ISubject subject)
+        protected readonly VendingMachine VendingMachine;
+
+        protected State(VendingMachine vendingMachine)
         {
-            throw new InvalidOperationException();
+            VendingMachine = vendingMachine;
         }
 
-        public virtual void ProductSelected(object product, ISubject subject)
-        {
-            throw new InvalidOperationException();
-        }
+        public abstract void InsertMoney(decimal amount);
 
-        public virtual void CustomerGotTheProduct( ISubject subject)
-        {
-            throw new InvalidOperationException();
-        }
+        public abstract void SelectProduct(string productCode);
 
-        public abstract override string ToString();
+        public abstract void DispenseProduct();
+
+        public abstract void Refill(List<Product> products);
+
+        public abstract void Cancel();
     }
 }
