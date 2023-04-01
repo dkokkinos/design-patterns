@@ -21,7 +21,7 @@ namespace State
             if(VendingMachine.SelectedProductCode == null)
             {
                 Console.WriteLine("There is no selected product to dispense.");
-                VendingMachine.SetState(new IdleState(VendingMachine));
+                VendingMachine.SetState(VendingMachine.GetState("idle"));
                 return;
             }
 
@@ -33,9 +33,9 @@ namespace State
             Console.WriteLine("Product dispensed.");
 
             if (VendingMachine.Products.All(x=>x.Stock == 0))
-                VendingMachine.SetState(new SoldOutState(VendingMachine));
+                VendingMachine.SetState(VendingMachine.GetState("soldout"));
             else
-                VendingMachine.SetState(new IdleState(VendingMachine));
+                VendingMachine.SetState(VendingMachine.GetState("idle"));
         }
 
         public override void InsertMoney(decimal money)

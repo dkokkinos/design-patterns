@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,9 +9,23 @@ namespace State
 {
     public class Program
     {
-
+        static IContainer container;
         public static async Task Main()
         {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<VendingMachine>().AsSelf();
+
+            builder.RegisterType<IdleState>().Keyed<State>("idle");
+            builder.RegisterType<PaymentState>().Keyed<State>("payment");
+            builder.RegisterType<DispenseProductState>().Keyed<State>("dispense");
+            builder.RegisterType<SoldOutState>().Keyed<State>("soldout");
+            
+            builder.RegisterType<StateFactory>().AsSelf();
+
+            container = builder.Build();
+
+
             Example1();
             Example2();
             Example3();
@@ -18,21 +33,22 @@ namespace State
 
         private static void Example3()
         {
-            VendingMachine vendingMachine = new(new List<Product>(){
+            VendingMachine vendingMachine = container.Resolve<VendingMachine>(new NamedParameter("products", new List<Product>(){
                 new Product("SPCOM1", 1, 1),
                 new Product("SPCOM2", 3, 1)
-            });
-
+            }));
+            
             vendingMachine.DispenseProduct();
             vendingMachine.InsertMoney(2);
         }
 
         private static void Example2()
         {
-            VendingMachine vendingMachine = new(new List<Product>(){
+            VendingMachine vendingMachine = container.Resolve<VendingMachine>(new NamedParameter("products", new List<Product>(){
                 new Product("SPCOM1", 1, 1),
                 new Product("SPCOM2", 3, 1)
-            });
+            }));
+
             vendingMachine.InsertMoney(1);
             vendingMachine.SelectProduct("SPCOM1");
             vendingMachine.InsertMoney(0.4m);
@@ -51,10 +67,11 @@ namespace State
 
         private static void Example1()
         {
-            VendingMachine vendingMachine = new(new List<Product>(){
+            VendingMachine vendingMachine = container.Resolve<VendingMachine>(new NamedParameter("products", new List<Product>(){
                 new Product("SPCOM1", 1, 3),
                 new Product("SPCOM2", 3, 1)
-            });
+            }));
+
             vendingMachine.SelectProduct("SPCOM1");
             vendingMachine.InsertMoney(1);
         }

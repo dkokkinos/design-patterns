@@ -10,11 +10,13 @@ namespace State
     {
         public List<Product> Products;
         public State CurrentState { get; private set; }
+        private readonly StateFactory _stateFactory;
 
-        public VendingMachine(List<Product> products)
+        public VendingMachine(List<Product> products, StateFactory stateFactory)
         {
             Products = products;
-            CurrentState = new IdleState(this);
+            _stateFactory = stateFactory;
+            CurrentState = _stateFactory.Create("idle", this);
         }
 
         public string SelectedProductCode { get; set; }
@@ -30,6 +32,9 @@ namespace State
 
         public void Refill(List<Product> products)
             => CurrentState.Refill(products);
+
+        public State GetState(string key)
+            => _stateFactory.Create(key, this);
 
         public void SetState(State state)
             => CurrentState = state;

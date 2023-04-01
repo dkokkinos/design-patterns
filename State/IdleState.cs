@@ -29,7 +29,7 @@ namespace State
             }    
             VendingMachine.SelectedProductCode = selectedProduct.Code;
             Console.WriteLine($"Product:{selectedProduct.Code} with price:{selectedProduct.Price} selected.");
-            VendingMachine.SetState(new PaymentState(VendingMachine));
+            VendingMachine.SetState(VendingMachine.GetState("payment"));
         }
 
         public override void DispenseProduct()

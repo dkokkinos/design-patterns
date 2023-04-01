@@ -29,7 +29,7 @@ namespace State
         {
             VendingMachine.Products = products;
             Console.WriteLine($"Total amount of products:{VendingMachine.Products.Sum(x => x.Stock)}");
-            VendingMachine.SetState(new IdleState(VendingMachine));
+            VendingMachine.SetState(VendingMachine.GetState("idle"));
         }
     }
 }
