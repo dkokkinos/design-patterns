@@ -9,7 +9,7 @@ namespace State
     public class Program
     {
 
-        public static async Task Main()
+        public static void Main()
         {
             Example1();
             Example2();
