@@ -1,25 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Visitor.Common;
 
 namespace Visitor.SimpleVisitor.Expressions
 {
-    public enum Operator
-    {
-        BANG_EQUAL,
-        EQUAL_EQUAL,
-        GREATER,
-        GREATER_EQUAL,
-        LESS,
-        LESS_EQUAL,
-        MINUS,
-        PLUS,
-        SLASH,
-        STAR
-    }
-
     public class Binary : Expression
     {
         public Expression Left { get; }

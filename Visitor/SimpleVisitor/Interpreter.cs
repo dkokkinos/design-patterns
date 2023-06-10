@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Visitor.SimpleVisitor.Expressions;
-using static Visitor.SimpleVisitor.Expressions.Operator;
+﻿using Visitor.SimpleVisitor.Expressions;
+using static Visitor.Common.Operator;
 
 namespace Visitor.SimpleVisitor
 {
@@ -22,27 +17,27 @@ namespace Visitor.SimpleVisitor
 
         public object Visit(Binary expr)
         {
-            Object left = expr.Left.Accept(this);
-            Object right = expr.Right.Accept(this);
+            var left = expr.Left.Accept(this);
+            var right = expr.Right.Accept(this);
 
             switch (expr.Operator)
             {
                 case BANG_EQUAL: return left != right;
                 case EQUAL_EQUAL: return left == right;
                 case GREATER:
-                    return (double)left > (double)right;
+                    return (int)left > (int)right;
                 case GREATER_EQUAL:
-                    return (double)left >= (double)right;
+                    return (int)left >= (int)right;
                 case LESS:
-                    return (double)left < (double)right;
+                    return (int)left < (int)right;
                 case LESS_EQUAL:
-                    return (double)left <= (double)right;
+                    return (int)left <= (int)right;
                 case MINUS:
-                    return (double)left - (double)right;
+                    return (int)left - (int)right;
                 case PLUS:
-                    if (left is double dLeft && right is double dRight)
+                    if (left is int leftAsInt && right is int rightAsInt)
                     {
-                        return dLeft + dRight;
+                        return leftAsInt + rightAsInt;
                     }
 
                     if (left is string leftStr && right is string rightStr)
@@ -51,12 +46,44 @@ namespace Visitor.SimpleVisitor
                     }
                     break;
                 case SLASH:
-                    return (double)left / (double)right;
+                    return (int)left / (int)right;
                 case STAR:
-                    return (double)left * (double)right;
+                    return (int)left * (int)right;
             }
 
             return null;
+        }
+
+        public object Visit(Unary expr)
+        {
+            var value = expr.Expression.Accept(this);
+
+            switch (expr.Operator) {
+                case BANG:
+                    if (value == null) return false;
+                    if (value is bool valueAsBool)
+                        return valueAsBool;
+                    return true;
+                case MINUS:
+                    return -(int)value;
+            }
+
+            // Unreachable.
+            return null;
+        }
+
+        public object Visit(Logical expr)
+        {
+            var left = expr.Left.Accept(this);
+
+            if (expr.Operator == OR) {
+                if (isTruthy(left)) return left;
+            } else
+            {
+                if (!isTruthy(left)) return left;
+            }
+
+            return expr.Right.Accept(this);
         }
     }
 }
