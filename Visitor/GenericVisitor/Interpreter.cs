@@ -1,10 +1,10 @@
 ﻿using System;
-using Visitor.SimpleVisitor.Expressions;
+using Visitor.GenericVisitor.Expressions;
 using static Visitor.Common.Operator;
 
-namespace Visitor.SimpleVisitor
+namespace Visitor.GenericVisitor
 {
-    public class Interpreter : IVisitor
+    public class Interpreter : IVisitor<object>
     {
         public object Visit(Literal expr)
         {
@@ -78,13 +78,17 @@ namespace Visitor.SimpleVisitor
             if (expr.Operator == OR)
             {
                 if (IsTruthy(left)) return left;
-            }
-            else
+            }else
             {
                 if (!IsTruthy(left)) return left;
             }
 
             return expr.Right.Accept(this);
+        }
+
+        public object Visit(Group expr)
+        {
+            return expr.Inner.Accept(this);
         }
 
         private bool IsTruthy(object obj)

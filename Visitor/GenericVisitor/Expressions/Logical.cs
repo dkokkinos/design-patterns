@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Visitor.Common;
 using Visitor.SimpleVisitor;
 
-namespace Visitor.SimpleVisitor.Expressions
+namespace Visitor.GenericVisitor.Expressions
 {
     public class Logical : Expression
     {
@@ -21,7 +21,7 @@ namespace Visitor.SimpleVisitor.Expressions
             Right = right;
         }
 
-        public override object Accept(IVisitor visitor)
+        public override T Accept<T>(IVisitor<T> visitor)
             => visitor.Visit(this);
     }
 }

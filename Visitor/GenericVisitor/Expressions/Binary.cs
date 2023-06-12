@@ -1,7 +1,6 @@
 ﻿using Visitor.Common;
-using Visitor.GenericVisitor;
 
-namespace Visitor.SimpleVisitor.Expressions
+namespace Visitor.GenericVisitor.Expressions
 {
     public class Binary : Expression
     {
@@ -17,7 +16,7 @@ namespace Visitor.SimpleVisitor.Expressions
             Right = right;
         }
 
-        public override object Accept(IVisitor visitor)
+        public override T Accept<T>(IVisitor<T> visitor)
             => visitor.Visit(this);
     }
 }

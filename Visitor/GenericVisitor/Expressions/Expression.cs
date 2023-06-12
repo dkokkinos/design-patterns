@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Visitor.GenericVisitor;
 
-namespace Visitor.SimpleVisitor.Expressions
+namespace Visitor.GenericVisitor.Expressions
 {
     public abstract class Expression
     {
-        public abstract object Accept(IVisitor visitor);
+        public abstract T Accept<T>(IVisitor<T> visitor);
     }
 }

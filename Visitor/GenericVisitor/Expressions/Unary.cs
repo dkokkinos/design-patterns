@@ -1,7 +1,6 @@
 ﻿using Visitor.Common;
-using Visitor.GenericVisitor;
 
-namespace Visitor.SimpleVisitor.Expressions
+namespace Visitor.GenericVisitor.Expressions
 {
     public class Unary : Expression
     {
@@ -14,7 +13,7 @@ namespace Visitor.SimpleVisitor.Expressions
             Operator = @operator;
         }
 
-        public override object Accept(IVisitor visitor)
+        public override T Accept<T>(IVisitor<T> visitor)
             => visitor.Visit(this);
     }
 }

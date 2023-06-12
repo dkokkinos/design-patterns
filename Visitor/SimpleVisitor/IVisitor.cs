@@ -11,7 +11,6 @@ namespace Visitor.SimpleVisitor
     {
         object Visit(Literal expr);
         object Visit(Unary expr);
-        object Visit(Grouping expr);
         object Visit(Binary expr);
         object Visit(Logical expr);
     }

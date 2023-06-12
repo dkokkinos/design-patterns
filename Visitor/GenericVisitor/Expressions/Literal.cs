@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Visitor.GenericVisitor;
 
-namespace Visitor.SimpleVisitor.Expressions
+namespace Visitor.GenericVisitor.Expressions
 {
     public class Literal : Expression
     {
@@ -16,9 +15,7 @@ namespace Visitor.SimpleVisitor.Expressions
             Value = value;
         }
 
-        public override object Accept(IVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor)
+            => visitor.Visit(this);
     }
 }
