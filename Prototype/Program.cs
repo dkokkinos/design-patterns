@@ -12,6 +12,24 @@ namespace Prototype
 
         public static void Main()
         {
+            PredefinedPrototypeRegistry registry = new PrototypeRegistry();
+            registry.Register("1", new ConcretePrototype1()
+            {
+                Property1 = "ConcretePrototype1.Value1",
+                Property2 = "ConcretePrototype1.Value2"
+            });
+            registry.Register("2", new ConcretePrototype2()
+            {
+                Property3 = "ConcretePrototype2.Value1",
+                Property4 = "ConcretePrototype2.Value2"
+            });
+
+            var prototype = registry.Get("1");
+
+            var anotherInstance = prototype.Clone();
+            anotherInstance
+
+
             Monster prototype = new Monster() { 
                 Name = "Alchemist",
                 Kind = "Agility"
@@ -39,7 +57,7 @@ namespace Prototype
             private readonly Dictionary<string, Configuration> prototypes = new();
 
             public Configuration GetConfiguration(string key)
-                => prototypes.FirstOrDefault(x => x.Key == key)?.Value;
+                => prototypes.FirstOrDefault(x => x.Key == key).Value;
 
             public void Register(string key, Configuration conf)
                 => prototypes.Add(key, conf);
