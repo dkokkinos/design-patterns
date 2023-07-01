@@ -121,14 +121,14 @@ namespace Memento
                 count += board[x + 1, y] == -1 ? 1 : 0;
 
             // down left
-            if (x > 0 && y > 0)
-                count += board[x - 1, y - 1] == -1 ? 1 : 0;
+            if (x > 0 && y < size - 1)
+                count += board[x + 1, y + 1] == -1 ? 1 : 0;
 
-            // up
-            if (y > 0)
-                count += board[x, y - 1] == -1 ? 1 : 0;
+            // down
+            if (y < size - 1)
+                count += board[x, y + 1] == -1 ? 1 : 0;
 
-            // up right
+            // down right
             if (x < size - 1 && y > 0)
                 count += board[x + 1, y - 1] == -1 ? 1 : 0;
 
