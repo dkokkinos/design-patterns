@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Prototype.Expressions;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,43 +14,71 @@ namespace Prototype
 
         public static void Main()
         {
-            PredefinedPrototypeRegistry registry = new PrototypeRegistry();
-            registry.Register("1", new ConcretePrototype1()
-            {
-                Property1 = "ConcretePrototype1.Value1",
-                Property2 = "ConcretePrototype1.Value2"
-            });
-            registry.Register("2", new ConcretePrototype2()
-            {
-                Property3 = "ConcretePrototype2.Value1",
-                Property4 = "ConcretePrototype2.Value2"
-            });
 
-            var prototype = registry.Get("1");
-
-            var anotherInstance = prototype.Clone();
-            anotherInstance
+            UsePrototypeToCreateADifferentInstanceSnapshot();
 
 
-            Monster prototype = new Monster() { 
-                Name = "Alchemist",
-                Kind = "Agility"
-            };
+            //Array arr = new int[] { 1, 2, 3, 4, 5 };
 
-            var newMonster = prototype.Clone() as Monster;
-            newMonster.Name = "Doom";
+            //var cloned = (Array)arr.Clone();
+            //cloned.SetValue(100, 0);
+
+            //foreach (var item in arr)
+            //    Console.Write(item + " ");
+
+            //Console.WriteLine();
+
+            //foreach (var item in cloned)
+            //    Console.Write(item + " ");
+
+            //PredefinedPrototypeRegistry registry = new PrototypeRegistry();
+            //registry.Register("1", new ConcretePrototype1()
+            //{
+            //    Property1 = "ConcretePrototype1.Value1",
+            //    Property2 = "ConcretePrototype1.Value2"
+            //});
+            //registry.Register("2", new ConcretePrototype2()
+            //{
+            //    Property3 = "ConcretePrototype2.Value1",
+            //    Property4 = "ConcretePrototype2.Value2"
+            //});
+
+            //var prototype = registry.Get("1");
+
+            //var anotherInstance = prototype.Clone();
+            //anotherInstance
+
+
+            //Monster prototype = new Monster() { 
+            //    Name = "Alchemist",
+            //    Kind = "Agility"
+            //};
+
+            //var newMonster = prototype.Clone() as Monster;
+            //newMonster.Name = "Doom";
 
 
 
-            // Create registry and register prototypes
-            var registry = new ConfigurationRegistry();
-            registry.Register("admin-debug", new Configuration(false, "Admin", "connStr", "apiKey", true));
-            registry.Register("admin-release", new Configuration(false, "Admin", "connStr", "apiKey", false));
-            registry.Register("user-debug", new Configuration(true, "User", "connStr", "apiKey2", true));
+            //// Create registry and register prototypes
+            //var registry = new ConfigurationRegistry();
+            //registry.Register("admin-debug", new Configuration(false, "Admin", "connStr", "apiKey", true));
+            //registry.Register("admin-release", new Configuration(false, "Admin", "connStr", "apiKey", false));
+            //registry.Register("user-debug", new Configuration(true, "User", "connStr", "apiKey2", true));
 
-            var conf = registry.GetConfiguration("admin-release");
-            conf.SetConnectionString("connStr2");
+            //var conf = registry.GetConfiguration("admin-release");
+            //conf.SetConnectionString("connStr2");
 
+        }
+
+        private static void UsePrototypeToCreateADifferentInstanceSnapshot()
+        {
+            var ten = new Literal(10);
+            var expr = new Binary(new Unary(ten, Operator.MINUS), Operator.GREATER, new Unary(new Literal(100), Operator.MINUS)); // -10 > -100
+            var expressionAsString = expr.ToString();
+
+            var cloned = expr.Clone(); //
+
+            ten.Value = 1000;
         }
 
         // Prototype Registry

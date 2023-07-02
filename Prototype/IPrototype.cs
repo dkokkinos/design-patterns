@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Prototype
 {
-    public interface IClonable
+    public interface IPrototype
     {
         Prototype Clone();
     }
 
-    public abstract class Prototype : IClonable
+    public abstract class Prototype : IPrototype
     {
         public string BaseProperty { get; set; }
 
