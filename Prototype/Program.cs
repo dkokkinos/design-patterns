@@ -1,4 +1,5 @@
-﻿using Prototype.Expressions;
+﻿using Autofac;
+using Prototype.Expressions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,74 +12,112 @@ namespace Prototype
 {
     public class Program
     {
-
         public static void Main()
         {
+            ShallowCopyExample();
+            DeepCopyExample();
+            ExpressionsPrototypeExample();
+            UsePrototypeRegistryWithPublicConcreteTypes();
+            UseDynamicPrototypeRegistry();
+            UseDepedencyInjectionAsRegistryForPrototypes();
+        }
 
-            UsePrototypeToCreateADifferentInstanceSnapshot();
+        private static void UseDepedencyInjectionAsRegistryForPrototypes()
+        {
+            var builder = new ContainerBuilder();
 
+            // Register the prototypes
+            builder.RegisterInstance(new StrengthMonster(new { power = "empty" }))
+                .Keyed<ICloneable>("strength")
+                .SingleInstance();
+            builder.RegisterInstance(new IntelligenceMonster(100))
+                .Keyed<ICloneable>("intelligence")
+                .SingleInstance();
 
-            //Array arr = new int[] { 1, 2, 3, 4, 5 };
+            var container = builder.Build();
 
-            //var cloned = (Array)arr.Clone();
-            //cloned.SetValue(100, 0);
-
-            //foreach (var item in arr)
-            //    Console.Write(item + " ");
-
-            //Console.WriteLine();
-
-            //foreach (var item in cloned)
-            //    Console.Write(item + " ");
-
-            //PredefinedPrototypeRegistry registry = new PrototypeRegistry();
-            //registry.Register("1", new ConcretePrototype1()
-            //{
-            //    Property1 = "ConcretePrototype1.Value1",
-            //    Property2 = "ConcretePrototype1.Value2"
-            //});
-            //registry.Register("2", new ConcretePrototype2()
-            //{
-            //    Property3 = "ConcretePrototype2.Value1",
-            //    Property4 = "ConcretePrototype2.Value2"
-            //});
-
-            //var prototype = registry.Get("1");
-
-            //var anotherInstance = prototype.Clone();
-            //anotherInstance
-
-
-            //Monster prototype = new Monster() { 
-            //    Name = "Alchemist",
-            //    Kind = "Agility"
-            //};
-
-            //var newMonster = prototype.Clone() as Monster;
-            //newMonster.Name = "Doom";
-
-
-
-            //// Create registry and register prototypes
-            //var registry = new ConfigurationRegistry();
-            //registry.Register("admin-debug", new Configuration(false, "Admin", "connStr", "apiKey", true));
-            //registry.Register("admin-release", new Configuration(false, "Admin", "connStr", "apiKey", false));
-            //registry.Register("user-debug", new Configuration(true, "User", "connStr", "apiKey2", true));
-
-            //var conf = registry.GetConfiguration("admin-release");
-            //conf.SetConnectionString("connStr2");
+            // We can later retrieve them.
+            var grimstroke = container.ResolveKeyed<ICloneable>("intelligence").Clone() as IntelligenceMonster;
+            grimstroke.ManaPoints = 200;
+            grimstroke.Draw();
 
         }
 
-        private static void UsePrototypeToCreateADifferentInstanceSnapshot()
+        private static void UseDynamicPrototypeRegistry()
+        {
+            var strengthMonsterPrototype = new StrengthMonster(new { power = "empty" });
+            var intelligenceMonsterPrototype = new IntelligenceMonster(100);
+
+            var registry = new DynamicPrototypeRegistry();
+            registry.Register("strength", strengthMonsterPrototype);
+            registry.Register("intelligence", intelligenceMonsterPrototype);
+
+            var grimstroke = registry.Get("intelligence").Clone() as IntelligenceMonster;
+            grimstroke.ManaPoints = 200;
+            grimstroke.Draw();
+        }
+
+        private static void UsePrototypeRegistryWithPublicConcreteTypes()
+        {
+            var strengthMonsterPrototype = new StrengthMonster(new {power = "empty" });
+            var intelligenceMonsterPrototype = new IntelligenceMonster(100);
+
+            var registry = new PrototypeRegistry(intelligenceMonsterPrototype, strengthMonsterPrototype);
+
+            var grimstroke = registry.IntelligenceMonsterPrototype.Clone() as IntelligenceMonster;
+            grimstroke.ManaPoints = 200;
+            grimstroke.Draw();
+
+        }
+
+        private static void DeepCopyExample()
+        {
+            var orders = new List<ShallowCopy.Order>()
+            {
+                new ShallowCopy.Order(new DateTime(2023, 2,2), "Item1", 4),
+                new ShallowCopy.Order(new DateTime(2023, 2,5), "Item2", 2)
+            };
+            var prototype = new ShallowCopy.Customer("Iron", "Man", orders);
+
+            var clonedCustomer = prototype.Clone() as ShallowCopy.Customer;
+            clonedCustomer.Orders[0].Count = 0;
+
+            if (prototype.Orders[0].Count != clonedCustomer.Orders[0].Count)
+                Console.WriteLine("In Deep copy the prototype and the cloned object does not share any reference between them.");
+        }
+
+        private static void ShallowCopyExample()
+        {
+            var orders = new List<ShallowCopy.Order>()
+            {
+                new ShallowCopy.Order(new DateTime(2023, 2,2), "Item1", 4),
+                new ShallowCopy.Order(new DateTime(2023, 2,5), "Item2", 2)
+            };
+            var prototype = new ShallowCopy.Customer("Iron", "Man", orders);
+
+            var clonedCustomer = prototype.Clone() as ShallowCopy.Customer;
+            clonedCustomer.Orders[0].Count = 0;
+
+            if (prototype.Orders[0].Count == clonedCustomer.Orders[0].Count)
+                Console.WriteLine("In Shallow copy the prototype and the cloned object share the same references for objects.");
+        }
+
+        private static void ExpressionsPrototypeExample()
         {
             var ten = new Literal(10);
-            var expr = new Binary(new Unary(ten, Operator.MINUS), Operator.GREATER, new Unary(new Literal(100), Operator.MINUS)); // -10 > -100
-            var expressionAsString = expr.ToString();
+            var prototype = new Binary(new Unary(ten, Operator.MINUS), Operator.GREATER, new Unary(new Literal(100), Operator.MINUS));
+            Console.WriteLine(prototype.ToString()); // Output: -10 > -100
 
-            var cloned = expr.Clone(); //
+            var cloned = prototype.Clone();
 
-            ten.Value = 1000;
+            ten.Value = 1000; // Even we change this value the cloned object is not affected, because of the deep copy.
+
+            Console.WriteLine(prototype.ToString()); // Output: -1000 > -100
+            Console.WriteLine(cloned.ToString()); // Output: -10 > -100
+
+            (((cloned as Binary).Left as Unary).Expression as Literal).Value = 50;
+            Console.WriteLine(prototype.ToString()); // Output: -1000 > -100
+            Console.WriteLine(cloned.ToString()); // Output: -50 > -100
         }
 
         // Prototype Registry
@@ -93,81 +132,5 @@ namespace Prototype
                 => prototypes.Add(key, conf);
         }
 
-
-        public class Configuration : ICloneable
-        {
-            public bool IsUserLogedIn { get; }
-            public string Role { get; }
-            public string ConnectionString { get; private set; }
-            public string ApiKey { get; }
-            public bool IsDebug { get; set; }
-
-            public Configuration(bool isUserLogedIn, string role, string connectionString, string apiKey, bool isDebug)
-            {
-                IsUserLogedIn = isUserLogedIn;
-                Role = role;
-                ConnectionString = connectionString;
-                ApiKey = apiKey;
-                IsDebug = isDebug;
-            }
-
-            private Configuration(Configuration source)
-            {
-                IsUserLogedIn = source.IsUserLogedIn;
-                Role = source.Role;
-                ConnectionString = source.ConnectionString;
-                ApiKey = source.ApiKey;
-                IsDebug = source.IsDebug;
-            }
-
-            public void SetConnectionString(string connectionString)
-                => ConnectionString = connectionString;
-
-            public object Clone()
-            {
-                return new Configuration(this);
-            }
-        }
-
-
-
-        public class Graphics
-        {
-            public void Draw(Monster monster, Point position)
-            {
-                // draw at position
-            }
-        }
-
-        public class Monster : ICloneable
-        {
-            public string Name { get; set; }
-            public string Kind { get; set; }
-
-            public Graphics Graphics { get; }
-
-            public Monster()
-            {
-                Graphics = new Graphics(); // time consuming functionality 
-            }
-
-            private Monster(Graphics graphics, string name, string kind)
-            {
-                Graphics = graphics;
-                Name = name;
-                Kind = kind;
-            }
-
-            public void Draw()
-            {
-                Graphics.Draw(this, position: new Point(10, 10));
-            }
-
-            public object Clone()
-            {
-                // we set the already created properties
-                return new Monster(Graphics, Name, Kind);
-            }
-        }
     }
 }

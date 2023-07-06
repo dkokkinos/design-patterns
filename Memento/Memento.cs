@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 
 namespace Memento
 {
-    public class Memento<T> : Stack<T>
+    [Serializable]
+    public class Memento
     {
-        public Memento(ICollection<T> numbers)
+        private char[,] state;
+
+        public Memento(char[,] state)
         {
-            foreach(var n in numbers)
-            {
-                base.Push(n);
-            }
+            this.state = state;
+        }
+
+        public char[,] GetState()
+        {
+            return state;
         }
     }
 }

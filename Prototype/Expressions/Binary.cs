@@ -14,7 +14,8 @@
             Right = right;
         }
 
-        public override object Clone() => MemberwiseClone();
+        public override object Clone()
+            => new Binary(Left.Clone() as Expression, Operator, Right.Clone() as Expression);
 
         public override string ToString()
             => $"{Left} {Operator.AsString()} {Right}";

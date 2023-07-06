@@ -11,7 +11,8 @@
             Operator = @operator;
         }
 
-        public override object Clone() => MemberwiseClone();
+        public override object Clone()
+            => new Unary(Expression.Clone() as Expression, Operator);
 
         public override string ToString()
             => $"{Operator.AsString()}{Expression}";

@@ -23,6 +23,11 @@ namespace Memento
             board.PrintBoard();
         }
 
+        internal void Print()
+        {
+            board.PrintBoard2();
+        }
+
         public void Play()
         {
             Console.WriteLine("Initial Board:");

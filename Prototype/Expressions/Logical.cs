@@ -20,7 +20,7 @@ namespace Prototype.Expressions
         }
 
         public override object Clone()
-            => MemberwiseClone();
+            => new Binary(Left.Clone() as Expression, Operator, Right.Clone() as Expression);
 
         public override string ToString()
             => $"{Left} {Operator.AsString()} {Right}";
