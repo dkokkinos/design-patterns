@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Memento.MementoWithInterfaces;
+using Memento.Simple;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -13,7 +15,7 @@ namespace Memento
     {
         public static void Main()
         {
-            TicTacToeBoard game = new TicTacToeBoard();
+            MementoWithInterfaces.TicTacToeBoard game = new MementoWithInterfaces.TicTacToeBoard();
             
             while(true)
             {
@@ -40,12 +42,14 @@ namespace Memento
                     game.MakeMove(x, y, player);
                     game.DisplayBoard();
 
-                    var win = game.CheckForWin();
+                    var winner = game.CheckForWin();
+                    if (winner != '\0')
+                        Console.WriteLine("Game over! Winner is " + winner);
                 }  
             }
         }
 
-        private static void SerializeMemento(Memento memento, string fileName)
+        private static void SerializeMemento(MementoWithInterfaces.Memento memento, string fileName)
         {
             using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
             {
@@ -54,12 +58,12 @@ namespace Memento
             }
         }
 
-        private static Memento DeserializeMemento(string fileName)
+        private static IMemento DeserializeMemento(string fileName)
         {
             using (FileStream fileStream = new FileStream(fileName, FileMode.Open))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                return (Memento)formatter.Deserialize(fileStream);
+                return (MementoWithInterfaces.IMemento)formatter.Deserialize(fileStream);
             }
         }
     }

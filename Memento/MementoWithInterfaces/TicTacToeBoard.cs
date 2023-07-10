@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Memento
+namespace Memento.MementoWithInterfaces
 {
     public class TicTacToeBoard
     {
@@ -41,7 +41,6 @@ namespace Memento
             Console.WriteLine();
         }
 
-
         public Memento Save()
         {
             char[,] state = new char[3, 3];
@@ -49,42 +48,42 @@ namespace Memento
             return new Memento(state);
         }
 
-        public void Restore(Memento memento)
+        public void Restore(IMemento memento)
         {
-            board = memento.GetState();
+            board = memento.GetBoard();
         }
 
-        public bool CheckForWin()
+        public char CheckForWin()
         {
             // Check rows
             for (int row = 0; row < 3; row++)
             {
-                if (board[row, 0] != '\0' && board[row, 0] == board[row, 1] && board[row, 1] == board[row, 2])
+                if (board[row, 0] != ' ' && board[row, 0] == board[row, 1] && board[row, 1] == board[row, 2])
                 {
-                    return true;
+                    return board[row, 0];
                 }
             }
 
             // Check columns
             for (int col = 0; col < 3; col++)
             {
-                if (board[0, col] != '\0' && board[0, col] == board[1, col] && board[1, col] == board[2, col])
+                if (board[0, col] != ' ' && board[0, col] == board[1, col] && board[1, col] == board[2, col])
                 {
-                    return true;
+                    return board[0, col];
                 }
             }
 
             // Check diagonals
-            if (board[0, 0] != '\0' && board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2])
+            if (board[0, 0] != ' ' && board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2])
             {
-                return true;
+                return board[0, 0];
             }
-            if (board[0, 2] != '\0' && board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0])
+            if (board[0, 2] != ' ' && board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0])
             {
-                return true;
+                return board[0, 2];
             }
 
-            return false;
+            return '\0';
         }
     }
 }
