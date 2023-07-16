@@ -41,7 +41,7 @@ namespace Memento.MementoWithInterfaces
             Console.WriteLine();
         }
 
-        public Memento Save()
+        public IMemento Save()
         {
             char[,] state = new char[3, 3];
             Array.Copy(board, state, board.Length);

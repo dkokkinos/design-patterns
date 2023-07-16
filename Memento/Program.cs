@@ -15,7 +15,7 @@ namespace Memento
     {
         public static void Main()
         {
-            MementoWithInterfaces.TicTacToeBoard game = new MementoWithInterfaces.TicTacToeBoard();
+            var game = new MementoWithInterfaces.TicTacToeBoard();
             
             while(true)
             {
@@ -49,7 +49,7 @@ namespace Memento
             }
         }
 
-        private static void SerializeMemento(MementoWithInterfaces.Memento memento, string fileName)
+        private static void SerializeMemento(MementoWithInterfaces.IMemento memento, string fileName)
         {
             using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
             {
