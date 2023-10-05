@@ -54,7 +54,9 @@ namespace Memento
             using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
                 formatter.Serialize(fileStream, memento);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
             }
         }
 
@@ -63,7 +65,9 @@ namespace Memento
             using (FileStream fileStream = new FileStream(fileName, FileMode.Open))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
                 return (MementoWithInterfaces.IMemento)formatter.Deserialize(fileStream);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
             }
         }
     }

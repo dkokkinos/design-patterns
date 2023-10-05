@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mediator.Plugin
 {
-    public class Mediator : IMediator
+    public class Mediator// : IMediator
     {
         private ICollection<IConsumer> Consumers;
 
@@ -15,7 +15,7 @@ namespace Mediator.Plugin
         {
             this.Consumers = new List<IConsumer>();
         }
-        
+         
         public void Add(string message)
         {
             this.Consumers.ToList().ForEach(x => x.Receive(message));

@@ -1,9 +1,11 @@
 ﻿using Mediator.Client;
+using Mediator.CQRS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IMediator = Mediator.Client.IMediator;
 
 namespace Mediator.Plugin
 {
@@ -18,10 +20,10 @@ namespace Mediator.Plugin
         // TODO hacky! only for testing
         public void Impersonate(object message)
         {
-            if (message is string)
-                this._mediator.Add(message.ToString());
-            else if (message is int)
-                this._mediator.Add((int)message);
+            //if (message is string)
+            //    this._mediator.Add(message.ToString());
+            //else if (message is int)
+            //    this._mediator.Add((int)message);
         }
 
     }
