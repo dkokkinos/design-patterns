@@ -5,6 +5,9 @@ using Mediator.RequestsAndHandlersExample.Handlers;
 using Mediator.RequestsAndHandlersExample.Requests;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,95 +15,217 @@ namespace Mediator
 {
     public class Program
     {
-
-        public interface IMediator {
-            void Notify(Participant participant, string info);
+        public interface IMediator
+        {
+            void Notify(Component component, object senderArgs);
         }
 
-        public class ConcreteMediator : IMediator
+        public class DirectMediator : IMediator
         {
-            public Participant1 Participant1 { get; }
-            public Participant2 Participant2 { get; }
-
-            public ConcreteMediator()
+            public void Notify(Component sender, object senderArgs)
             {
-                Participant1 = new Participant1(this);
-                Participant2 = new Participant2(this);
+                // The sender arguments consists of two parts. The first is the receiver
+                // and the second the message.
+                if (senderArgs is not List<object> argsList) return;
+
+                if (argsList[0] is not Component receiver) return;
+
+                receiver.Receive(sender, argsList[1]);
+            }
+        }
+
+        public class Group
+        {
+            public List<Component> Components = new();
+            public bool ComponentExists(Component component) => Components.Contains(component);
+        }
+
+        // A Hub that forwards messages to receipients in a group.
+        public class GroupMediator : IMediator
+        {
+            public List<Group> Groups { get; set; } = new();
+
+            public virtual void Notify(Component sender, object senderArgs)
+            {
+                var groupsToComponentBelongsTo = Groups.Where(x=>x.ComponentExists(sender)).ToList();
+                var receivers = groupsToComponentBelongsTo
+                    .SelectMany(x => x.Components)
+                    .Where(x=> x != sender)
+                    .Distinct()
+                    .ToList();
+                receivers.ForEach(x => x.Receive(sender, senderArgs));
+            }
+        }
+
+        // Hub that forwards commands to sensors, and messages to users inside the same group.
+        public class SensorCommandrMediator : GroupMediator
+        {
+            public override void Notify(Component sender, object senderArgs)
+            {
+                var groupsToComponentBelongsTo = Groups.Where(x => x.ComponentExists(sender)).ToList();
+                var receivers = groupsToComponentBelongsTo
+                    .SelectMany(x => x.Components)
+                    .Where(x => x != sender)
+                    .Distinct()
+                    .ToList();
+                if (senderArgs == "measure")
+                    receivers = receivers.Where(x => x is not User).ToList();
+                else
+                    receivers = receivers.Where(x => x is not Sensor).ToList();
+                receivers.ForEach(x => x.Receive(sender, senderArgs));
+            }
+        }
+
+        // Hub that broadcast message to all components
+        public class BroadcastMediator : IMediator
+        {
+            public List<Component> Components = new();
+
+            public void Notify(Component sender, object senderArgs)
+            {
+                Components.ForEach(x=>x.Receive(sender, senderArgs));
+            }
+        }
+
+        // The abstract class of each Participant, either User or Sensor
+        public abstract class Component
+        {
+            public IMediator Mediator { get; set; }
+
+            public abstract void Receive(Component receiver, object args);
+        }
+
+        // A user can send and receive messages to or from other users.
+        public class User : Component
+        {
+            public string Name { get; }
+
+            public User(string name)
+            {
+                Name = name;
             }
 
-            public void Notify(Participant participant, string info)
+            public override void Receive(Component receiver, object args)
             {
-                if(participant == Participant1)
+                Console.WriteLine($"User:{this}, Received From:{receiver}, Message:{args}.");
+            }
+
+            public void Send(Component receiver, object args)
+            {
+                Mediator.Notify(this, new List<object>() { receiver, args });
+            }
+
+            public override string ToString() => Name;
+        }
+
+        // A sensor can receive commands and notify its state changed to the mediator.
+        public class Sensor : Component
+        {
+            public string Id { get; }
+            public object LastValue { get; protected set; }
+
+            public Sensor(string id)
+            {
+                Id = id;
+            }
+
+            public override void Receive(Component receiver, object args)
+            {
+                if(args == "measure")
                 {
-                    if(info == "info:1:a")
-                    {
-                        // Orchestrate other participants or execute bussiness logic.
-                        Participant2.ExecuteAnotherOperation2();
-                    }else if (info == "info:1:b")
-                    {
-                        // Orchestrate other participants or execute bussiness logic.
-                    }
-                }else if(participant == Participant2)
+                    LastValue = new Random().NextDouble(); // Make measurement.
+                    Mediator.Notify(this, LastValue);
+                }
+            }
+
+            // This simulates the measurement the sensor does.
+            public virtual void ValueChanged(object value)
+            {
+                LastValue = value;
+                Mediator.Notify(this, LastValue);
+            }
+
+            public override string ToString() => $"Sensor({Id})";
+        }
+
+        // sensor that we want to trigger other sensor's measurement imediately
+        public class AccelerationSensor : Sensor
+        {
+            public AccelerationSensor() : base("acceleration") { }
+
+            public override void Receive(Component receiver, object args)
+            {
+                if (args == "measure")
                 {
-                    if (info == "info:2:a")
-                    {
-                        // Orchestrate other participants or execute bussiness logic.
-                        Participant2.ExecuteAnotherOperation2();
-                    }
-                }    
-            }
-        }
-
-        public abstract class Participant
-        {
-            protected readonly IMediator mediator;
-
-            public Participant(IMediator mediator)
-            {
-                this.mediator = mediator;
-            }
-        }
-
-        public class Participant1 : Participant
-        {
-            public Participant1(IMediator mediator) : base(mediator)
-            {
+                    LastValue = new Random().NextDouble(); // Make measurement.
+                    Mediator.Notify(this, "measure");
+                    Mediator.Notify(this, LastValue);
+                }
             }
 
-            public void ExecuteOperation()
+            public override void ValueChanged(object value)
             {
-                this.mediator.Notify(this, "info:1:a");
-            }
-
-            public void ExecuteAnotherOperation()
-            {
-                this.mediator.Notify(this, "info:1:b");
-            }
-        }
-
-        public class Participant2 : Participant
-        {
-            public Participant2(IMediator mediator) : base(mediator)
-            {
-            }
-
-            public void ExecuteOperation2()
-            {
-                this.mediator.Notify(this, "info:2:a");
-            }
-
-            public void ExecuteAnotherOperation2()
-            {
-                // This operation does't notify the Mediator.
+                LastValue = value;
+                Mediator.Notify(this, "measure");
+                Mediator.Notify(this, LastValue);
             }
         }
 
         public static void Main()
         {
+            var alice = new User("Alice");
+            var bob = new User("Bob");
+            var jim = new User("Jim");
+            var tom = new User("Tom");
 
-            var mediator = new ConcreteMediator();
-            var participant1 = mediator.Participant1;
-            participant1.ExecuteOperation();
+            var temperature = new Sensor("temperature");
+            var wind = new Sensor("wind");
+            var humidity = new Sensor("humidity");
+
+            //
+            var acceleration = new AccelerationSensor();
+            var sensorCmndrHub = new SensorCommandrMediator();
+            sensorCmndrHub.Groups.Add(new Group() { Components = new List<Component>() { acceleration, humidity, temperature, jim, bob, tom } });
+            acceleration.Mediator = sensorCmndrHub;
+
+            var directHub = new DirectMediator();
+            var groupHub = new GroupMediator();
+            var broadcastHub = new BroadcastMediator();
+
+            alice.Mediator = directHub;
+            bob.Mediator = directHub;
+            jim.Mediator = directHub;
+            tom.Mediator = directHub;
+
+            broadcastHub.Components.AddRange(new[] {alice, bob, jim});
+
+            groupHub.Groups.Add(new Group() { Components = new List<Component>() { alice, bob, temperature } });
+            groupHub.Groups.Add(new Group() { Components = new List<Component>() { humidity, jim, tom } });
+
+           
+
+            temperature.Mediator = groupHub;
+            humidity.Mediator = groupHub;
+            wind.Mediator = broadcastHub;
+
+            
+            bob.Send(alice, "a message");
+            alice.Send(bob, "another message");
+
+            temperature.ValueChanged(3.5m);
+            wind.ValueChanged(2);
+            humidity.ValueChanged(10);
+
+            // Issue a command from bob to temperature sensor
+            bob.Send(temperature, "measure"); // After the measurment, Alice and Bob will be notified from humidity sensor.
+
+            tom.Send(humidity, "measure"); // After the measurment, Jim and Tom will be notified from humidity sensor.
+
+            //
+            acceleration.ValueChanged(0.5);
+            jim.Send(acceleration, "measure");
+
+
 
             CQRSExample();
             ChainReactionExample();
