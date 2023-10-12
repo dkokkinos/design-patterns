@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mediator.Client
+namespace Mediator.RequestsAndHandlersExample
 {
-    public interface IConsumer
+    internal interface IMediator
     {
-        void Receive(object message);
+        object Send(IRequest request);
     }
 }

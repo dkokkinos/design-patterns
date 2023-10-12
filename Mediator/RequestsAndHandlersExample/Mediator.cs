@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Mediator.RequestsAndHandlersExample
 {
-    public class Mediator
+    public class Mediator : IMediator
     {
         public Dictionary<Type, Type> _requestHandlers;
 
