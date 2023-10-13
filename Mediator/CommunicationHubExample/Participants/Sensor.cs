@@ -3,7 +3,7 @@ using static Mediator.Program;
 
 namespace Mediator.CommunicationHubExample.Participants
 {
-    // A sensor can receive commands and notify its state changed to the mediator.
+    // A sensor can receive commands and notify its state to the mediator.
     public class Sensor : Participant
     {
         public string Id { get; }
