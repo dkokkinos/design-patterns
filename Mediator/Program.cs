@@ -1,26 +1,41 @@
-﻿using Mediator.CommunicationHubExample.Mediators;
+﻿using Autofac;
+using Mediator.CommunicationHubExample.Mediators;
 using Mediator.CommunicationHubExample.Participants;
 using Mediator.CQRS;
 using Mediator.HomeAppliancesExample;
 using Mediator.RequestsAndHandlersExample;
 using Mediator.RequestsAndHandlersExample.Handlers;
 using Mediator.RequestsAndHandlersExample.Requests;
+using MediatR.Extensions.Autofac.DependencyInjection;
+using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Mediator
 {
-    public partial class Program
+    public class MediatorRegistrar
     {
-        
+        public Dictionary<Type, Type> RequestHandlersMap { get; }
+
+        public MediatorRegistrar(Dictionary<Type, Type> requestHandlersMap)
+        {
+            RequestHandlersMap = requestHandlersMap;
+        }
+
+        public Type this[Type type] => RequestHandlersMap[type];
+    }
+
+    public class Program
+    {
         public static void Main()
         {
+            RequestAndHandlersExampleWithAutofacDI();
+            HomeApplianceExample();
             CQRSExample();
             ChainReactionExample();
-            HomeApplianceExample();
-            RequestAndHandlersExample();
 
             CommunicationHubExample();
         }
@@ -118,16 +133,68 @@ namespace Mediator
             alarm.StartRinging();
         }
 
-        public static void RequestAndHandlersExample()
+        public static void RequestAndHandlersExampleWithAutofacDI()
         {
-            var mediator = new RequestsAndHandlersExample.Mediator(new Dictionary<Type, Type>()
             {
-                { typeof(GetUsersRequest), typeof(GetUsersRequestHandler) },
-                { typeof(CreateUserRequest), typeof(CreateUserRequestHandler) }
-            });
+                // 1st option
+                var builder = new ContainerBuilder();
 
-            var users = mediator.Send(new GetUsersRequest(count: 10));
-            var userIsCreated = mediator.Send(new CreateUserRequest(username: "newUser"));
+                builder.RegisterType<RequestsAndHandlersExample.Mediator>()
+                    .As<RequestsAndHandlersExample.IMediator>();
+                builder.RegisterInstance(new MediatorRegistrar(new Dictionary<Type, Type>(){
+                    { typeof(GetUsersRequest), typeof(GetUsersRequestHandler) },
+                    { typeof(CreateUserRequest), typeof(CreateUserRequestHandler) }
+                }));
+
+                var container = builder.Build();
+                using var scope = container.BeginLifetimeScope();
+                var mediator = scope.Resolve<RequestsAndHandlersExample.IMediator>();
+
+                var users = mediator.Send(new GetUsersRequest(count: 10));
+                var userIsCreated = mediator.Send(new CreateUserRequest(username: "newUser"));
+            }
+
+            {
+                // 2nd option
+                var builder = new ContainerBuilder();
+                builder.RegisterType<RequestsAndHandlersExample.Mediator>().As<RequestsAndHandlersExample.IMediator>();
+
+                // Automatically scan the assembly and load all request and handlers
+                var requestInterfaceType = typeof(RequestsAndHandlersExample.IRequest);
+                var assemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
+                // Find all requests that implements the IRequest interface
+                var requestTypes = assemblyTypes
+                    .Where(x => requestInterfaceType.IsAssignableFrom(x))
+                    .Except(new List<Type>() { requestInterfaceType });
+
+                var requestHandlersMap = new Dictionary<Type, Type>();
+                // Foreach request find its handler.
+                foreach(var requestType in requestTypes)
+                {
+                    var handlerInterfaceType = typeof(RequestsAndHandlersExample.IRequestHandler<>).MakeGenericType(requestType);
+                    var handlerType = assemblyTypes.FirstOrDefault(x => handlerInterfaceType.IsAssignableFrom(x));
+                    requestHandlersMap.Add(requestType, handlerType);
+                }
+
+                builder.RegisterInstance(new MediatorRegistrar(requestHandlersMap));
+                var container = builder.Build();
+                using var scope = container.BeginLifetimeScope();
+                var mediator = scope.Resolve<RequestsAndHandlersExample.IMediator>();
+
+                var users = mediator.Send(new GetUsersRequest(count: 10));
+                var userIsCreated = mediator.Send(new CreateUserRequest(username: "newUser"));
+            }
+
+            {
+                var builder = new ContainerBuilder();
+                var configuration = MediatRConfigurationBuilder
+                   .Create(Assembly.GetExecutingAssembly())
+                   .WithAllOpenGenericHandlerTypesRegistered()
+                   .Build();
+                builder.RegisterMediatR(configuration);
+                // Requests and Handler must implement from MediatR types.
+            }
+
         }
     }
 }
