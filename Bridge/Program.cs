@@ -14,6 +14,8 @@ namespace Bridge
             SerializerExampleWithoutBridgePattern();
             SerializerExampleWithBridgePattern();
 
+           
+
             PortableSpeakerExample.WithoutBridgePattern.SonyCubePortableSpeaker s = new PortableSpeakerExample.WithoutBridgePattern.SonyCubePortableSpeaker();
 
             s.On();
@@ -68,6 +70,10 @@ namespace Bridge
 
             Console.WriteLine("SerializerExampleWithBridgePattern, customer: " + customer.Serialize());
             Console.WriteLine("SerializerExampleWithBridgePattern, product: " + product.Serialize());
+
+            var xmlSerializer = new XmlSerializer();
+            product.SetSerializer(xmlSerializer);
+            Console.WriteLine(product.Serialize());
         }
     }
 }

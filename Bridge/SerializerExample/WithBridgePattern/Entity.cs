@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Text.Json;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace Bridge.SerializerExample.WithBridgePattern
 {
@@ -65,6 +66,17 @@ namespace Bridge.SerializerExample.WithBridgePattern
         public override string Serialize(Entity entity)
         {
             return JsonConvert.SerializeObject(entity);
+        }
+    }
+
+    public class XmlSerializer : Serializer
+    {
+        public override string Serialize(Entity entity)
+        {
+            System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(entity.GetType());
+            using MemoryStream s = new MemoryStream();
+            x.Serialize(s, entity);
+            return Encoding.ASCII.GetString(s.ToArray());
         }
     }
 }
