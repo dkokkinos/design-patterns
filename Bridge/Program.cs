@@ -1,8 +1,10 @@
-﻿using Bridge.SerializerExample.WithBridgePattern;
+﻿using Autofac;
+using Bridge.SerializerExample.WithBridgePattern;
 using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Reflection.Metadata;
 
 namespace Bridge
 {
@@ -10,17 +12,76 @@ namespace Bridge
     {
         public static void Main(string[] args)
         {
-         
+            PortableSpeakerWithoutBridgePatternExample();
+            PortableSpeakerWithBridgePatternExample();
+
             SerializerExampleWithoutBridgePattern();
             SerializerExampleWithBridgePattern();
+            SerializerExampleWithBridgePatternWithDI();
+        }
 
-           
-
+        private static void PortableSpeakerWithoutBridgePatternExample()
+        {
+            // We instantiate the instance we want.
             PortableSpeakerExample.WithoutBridgePattern.SonyCubePortableSpeaker s = new PortableSpeakerExample.WithoutBridgePattern.SonyCubePortableSpeaker();
 
             s.On();
             s.Off();
             s.Mute();
+        }
+
+        public static void PortableSpeakerWithBridgePatternExample()
+        {
+            var sonyPortableSpeaker = new PortableSpeakerExample.WithBridgePattern.CubePortableSpeaker(new PortableSpeakerExample.WithBridgePattern.SonySpeakerController());
+
+            sonyPortableSpeaker.On();
+            sonyPortableSpeaker.Off();
+            sonyPortableSpeaker.Mute();
+        }
+
+        private static void SerializerExampleWithBridgePatternWithDI()
+        {
+            var builder = new ContainerBuilder();
+
+            // Register customer without any serializer.
+            builder.RegisterType<Customer>().Keyed<Entity>("customer");
+
+            // Register Product with XmlSerializer as a default serializer.
+            builder.Register<Product>((c,p) => {
+                var product = new Product();
+                product.SetSerializer(c.ResolveKeyed<Serializer>("xml"));
+                return product;
+            }).Keyed<Entity>("product");
+
+
+            // Register all serializers with a key.
+            builder.RegisterType<CsvSerializer>().Keyed<Serializer>("csv");
+            builder.RegisterType<JsonSerializer>().Keyed<Serializer>("json");
+            builder.RegisterType<XmlSerializer>().Keyed<Serializer>("xml");
+
+            // Register CsvSerializer as default serializer.
+            builder.RegisterType<CsvSerializer>().As<Serializer>();
+
+            var container = builder.Build(); // We are done with the registrations.
+
+
+            var customer = container.ResolveKeyed<Entity>("customer") as Customer;
+            customer.SetSerializer(container.Resolve<Serializer>()); // set to the customer the default serializer.
+
+            customer.Id = Guid.NewGuid().ToString();
+            customer.Firstname = "first name";
+            customer.Lastname = "last name";
+
+            var customerAsJson = customer.Serialize();
+            Console.WriteLine(customerAsJson);
+
+            // The resolved product will have the XmlSerializer as Serializer.
+            var product = container.ResolveKeyed<Entity>("product") as Product;
+            product.Id = "product id";
+            product.Sku = "1234";
+            product.Name = "a product";
+            var productAsXml = product.Serialize();
+            Console.WriteLine(productAsXml);
         }
 
         private static void SerializerExampleWithoutBridgePattern()

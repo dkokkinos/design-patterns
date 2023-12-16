@@ -81,13 +81,16 @@ namespace Mediator
 
         private static void CQRSExample()
         {
+            // We register commands and requests with their handlers. 
             ProductsController controller = new ProductsController(new CQRS.Mediator(new Dictionary<Type, Type>()
             {
                 { typeof(CreateProductCommand), typeof(CreateProductCommandHandler) },
                 { typeof(GetProductsRequest), typeof(GetProductsRequestHandler) }
             }));
 
+            // This will create a CreateProductCommand and the CreateProductCommandHandler will execute the command.
             controller.CreateProduct("product 1", 100);
+
             var products = controller.GetProducts();
         }
 
