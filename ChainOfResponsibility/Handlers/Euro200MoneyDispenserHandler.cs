@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChainOfResponsibility.Plugins
+namespace ChainOfResponsibility.Handlers
 {
     public class Euro200MoneyDispenserHandler : MoneyDispenserHandler
     {
@@ -16,7 +16,7 @@ namespace ChainOfResponsibility.Plugins
                 money.AddCoin(200);
             }
 
-            base.Successor?.SliceMoney(money);
+            Successor?.SliceMoney(money);
         }
     }
 }

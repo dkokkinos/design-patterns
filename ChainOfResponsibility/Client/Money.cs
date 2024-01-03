@@ -30,13 +30,12 @@ namespace ChainOfResponsibility.Client
 
         public override string ToString()
         {
-            string res = string.Empty;
-            res += "Money Pieces:" + Environment.NewLine;
-            foreach(var piece in this.Coins)
+            List<string> res = new List<string>();
+            foreach(var coin in this.Coins)
             {
-                res += $"{piece.Value} times {piece.Key}{Environment.NewLine}";
+                res.Add($"{coin.Value} of {coin.Key}");
             }
-            return res;
+            return string.Join(", ", res);
         }
     }
 }

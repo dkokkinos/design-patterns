@@ -5,18 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChainOfResponsibility.Plugins
+namespace ChainOfResponsibility.Handlers
 {
-    public class Euro10MoneyDispenserHandler : MoneyDispenserHandler
+    public class Euro500MoneyDispenserHandler : MoneyDispenserHandler
     {
         protected override void ProcessRequest(Money money)
         {
-            while (money.Amount >= 10)
+            while (money.Amount >= 500)
             {
-                money.AddCoin(10);
+                money.AddCoin(500);
             }
 
-            base.Successor?.SliceMoney(money);
+            Successor?.SliceMoney(money);
         }
     }
 }
