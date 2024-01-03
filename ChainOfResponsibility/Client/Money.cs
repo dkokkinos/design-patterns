@@ -10,20 +10,20 @@ namespace ChainOfResponsibility.Client
     {
         public Money(decimal amount)
         {
-            this.AmountPieces = new Dictionary<decimal, int>();
+            this.Coins = new Dictionary<decimal, int>();
             this.Amount = amount;
         }
-        private Dictionary<decimal, int> AmountPieces { get; set; }
+        private Dictionary<decimal, int> Coins { get; set; }
         public decimal Amount { get; private set; }
         
-        public void AddPiece(decimal amount)
+        public void AddCoin(decimal amount)
         {
-            if (this.AmountPieces.ContainsKey(amount))
+            if (this.Coins.ContainsKey(amount))
             {
-                this.AmountPieces[amount]++;
+                this.Coins[amount]++;
             }else
             {
-                this.AmountPieces.Add(amount, 1);
+                this.Coins.Add(amount, 1);
             }
             this.Amount -= amount;
         }
@@ -32,7 +32,7 @@ namespace ChainOfResponsibility.Client
         {
             string res = string.Empty;
             res += "Money Pieces:" + Environment.NewLine;
-            foreach(var piece in this.AmountPieces)
+            foreach(var piece in this.Coins)
             {
                 res += $"{piece.Value} times {piece.Key}{Environment.NewLine}";
             }

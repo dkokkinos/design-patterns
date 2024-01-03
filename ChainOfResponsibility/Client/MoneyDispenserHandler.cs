@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ChainOfResponsibility.Client
 {
-    public abstract class MoneyChanger
+    public abstract class MoneyDispenserHandler
     {
-        protected MoneyChanger Successor;
-        public void SetSuccessor(MoneyChanger successor)
+        protected MoneyDispenserHandler Successor;
+        public void SetSuccessor(MoneyDispenserHandler successor)
         {
             this.Successor = successor;
         }

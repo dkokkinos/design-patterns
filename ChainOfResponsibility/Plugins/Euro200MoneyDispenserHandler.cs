@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace ChainOfResponsibility.Plugins
 {
-    public class Euro50MoneyChanger : MoneyChanger
+    public class Euro200MoneyDispenserHandler : MoneyDispenserHandler
     {
         protected override void ProcessRequest(Money money)
         {
-            while(money.Amount >= 50)
+            while (money.Amount >= 200)
             {
-                money.AddPiece(50);
+                money.AddCoin(200);
             }
 
             base.Successor?.SliceMoney(money);

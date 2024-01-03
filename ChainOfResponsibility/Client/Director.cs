@@ -8,10 +8,10 @@ namespace ChainOfResponsibility.Client
 {
     public class Director
     {
-        public MoneyChanger ConstructChain(params MoneyChanger[] changers)
+        public MoneyDispenserHandler ConstructChain(params MoneyDispenserHandler[] changers)
         {
-            MoneyChanger pre = changers[0];
-            MoneyChanger last = null;
+            MoneyDispenserHandler pre = changers[0];
+            MoneyDispenserHandler last = null;
             foreach(var changer in changers.Skip(1))
             {
                 pre.SetSuccessor(changer);
