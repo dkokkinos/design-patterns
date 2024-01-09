@@ -14,11 +14,19 @@ namespace ChainOfResponsibility
         public static void Main(string[] args)
         {
             var director = new Director();
-            var handlers = director.ConstructChain(new Euro500MoneyDispenserHandler(), new Euro10MoneyDispenserHandler(), new Cent50MoneyDispenserHandler(), new Cent10MoneyMoneyDispenserHandler());
+            var handlers = director.ConstructChain(
+                new Euro500MoneyDispenserHandler(),
+                new Euro200MoneyDispenserHandler(),
+                new Euro50MoneyDispenserHandler(),
+                new Euro10MoneyDispenserHandler(),
+                new Cent50MoneyDispenserHandler(),
+                new Cent10MoneyMoneyDispenserHandler());
 
-            Money money = new Money(510.2m);
+            Money money = new Money(535.70m);
 
             handlers.SliceMoney(money);
+
+            Console.WriteLine(money);
         }
     }
 }

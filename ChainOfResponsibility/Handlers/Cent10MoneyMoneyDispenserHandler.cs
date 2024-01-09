@@ -13,7 +13,7 @@ namespace ChainOfResponsibility.Handlers
         {
             while (money.Amount >= 0.1m)
             {
-                money.AddCoin(0.1m);
+                money.AddUnit(0.1m);
             }
 
             Successor?.SliceMoney(money);

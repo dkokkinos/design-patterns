@@ -10,20 +10,20 @@ namespace ChainOfResponsibility.Client
     {
         public Money(decimal amount)
         {
-            this.Coins = new Dictionary<decimal, int>();
+            this.CurrencyUnits = new Dictionary<decimal, int>();
             this.Amount = amount;
         }
-        private Dictionary<decimal, int> Coins { get; set; }
+        private Dictionary<decimal, int> CurrencyUnits { get; set; }
         public decimal Amount { get; private set; }
         
-        public void AddCoin(decimal amount)
+        public void AddUnit(decimal amount)
         {
-            if (this.Coins.ContainsKey(amount))
+            if (this.CurrencyUnits.ContainsKey(amount))
             {
-                this.Coins[amount]++;
+                this.CurrencyUnits[amount]++;
             }else
             {
-                this.Coins.Add(amount, 1);
+                this.CurrencyUnits.Add(amount, 1);
             }
             this.Amount -= amount;
         }
@@ -31,9 +31,9 @@ namespace ChainOfResponsibility.Client
         public override string ToString()
         {
             List<string> res = new List<string>();
-            foreach(var coin in this.Coins)
+            foreach(var unit in this.CurrencyUnits)
             {
-                res.Add($"{coin.Value} of {coin.Key}");
+                res.Add($"{unit.Value} of {unit.Key} euros");
             }
             return string.Join(", ", res);
         }
