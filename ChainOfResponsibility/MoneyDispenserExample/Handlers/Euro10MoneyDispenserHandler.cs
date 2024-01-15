@@ -1,19 +1,18 @@
-﻿using ChainOfResponsibility.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChainOfResponsibility.Handlers
+namespace ChainOfResponsibility.MoneyDispenserExample.Handlers
 {
-    public class Cent10MoneyMoneyDispenserHandler : MoneyDispenserHandler
+    public class Euro10MoneyDispenserHandler : MoneyDispenserHandler
     {
         protected override void ProcessRequest(Money money)
         {
-            while (money.Amount >= 0.1m)
+            while (money.Amount >= 10)
             {
-                money.AddUnit(0.1m);
+                money.AddUnit(10);
             }
 
             Successor?.SliceMoney(money);
