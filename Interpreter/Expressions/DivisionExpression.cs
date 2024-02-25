@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Interpreter.Expressions
 {
-    public class SumExpression : IExpression
+    public class DivisionExpression : IExpression
     {
         private readonly IExpression _left;
         private readonly IExpression _right;
 
-        public SumExpression(IExpression left, IExpression right)
+        public DivisionExpression(IExpression left, IExpression right)
         {
-            this._left = left;
-            this._right = right;
+            _left = left;
+            _right = right;
         }
 
         public decimal Evaluate()
-            => this._left.Evaluate() + this._right.Evaluate();
+            => this._left.Evaluate() / this._right.Evaluate();
     }
 }

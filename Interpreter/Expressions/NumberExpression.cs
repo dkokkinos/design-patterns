@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Interpreter.Expressions
+﻿namespace Interpreter.Expressions
 {
     public class NumberExpression : IExpression
     {
-        private float Number { get; set; }
+        private readonly decimal _number;
 
-        public NumberExpression(float number)
+        public NumberExpression(decimal number)
         {
-            this.Number = number;
+            this._number = number;
         }
 
-        public float Evaluate()
-        {
-            return this.Number;
-        }
+        public decimal Evaluate() => this._number;
     }
 }

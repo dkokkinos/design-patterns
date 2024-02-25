@@ -8,6 +8,6 @@ namespace Interpreter.Expressions
 {
     public interface IExpression
     {
-        float Evaluate();
+        decimal Evaluate();
     }
 }
