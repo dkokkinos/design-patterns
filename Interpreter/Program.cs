@@ -14,44 +14,6 @@ namespace Interpreter
             MathematicalExpressionExampleWithDI();
         }
 
-        private static void MathematicalExpressionExampleWithDI()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterType<SubtractionExpression>().Keyed<IExpression>("-");
-            builder.RegisterType<MultiplicationExpression>().Keyed<IExpression>("*");
-            builder.RegisterType<DivisionExpression>().Keyed<IExpression>("/");
-            builder.RegisterType<AdditionExpression>().Keyed<IExpression>("+");
-            builder.RegisterType<NumberExpression>().Keyed<IExpression>("num");
-
-            IContainer container = builder.Build();
-
-            // 1 * (4 - 5) / 6 + 10
-            var num1 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 1m));
-            var num4 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 4m));
-            var num5 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 5m));
-            var num6 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 6m));
-            var num10 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 10m));
-
-            var subtraction = container.ResolveKeyed<IExpression>("-", 
-                new NamedParameter("left", num4),
-                new NamedParameter("right", num5));
-
-            var multiplication = container.ResolveKeyed<IExpression>("*",
-                new NamedParameter("left", num1),
-                new NamedParameter("right", subtraction));
-
-            var division = container.ResolveKeyed<IExpression>("/",
-                new NamedParameter("left", multiplication),
-                new NamedParameter("right", num6));
-
-            var addition = container.ResolveKeyed<IExpression>("+",
-                new NamedParameter("left", division),
-                new NamedParameter("right", num10));
-
-            var result = addition.Evaluate(); // Output: 9.8333
-        }
-
         private static void MathematicalExpressionExample1()
         {
             // 1 * (4 - 5) / 6 + 10
@@ -75,5 +37,42 @@ namespace Interpreter
             var result = addition.Evaluate(); // Output: 3
         }
 
+        private static void MathematicalExpressionExampleWithDI()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<SubtractionExpression>().Keyed<IExpression>("-");
+            builder.RegisterType<MultiplicationExpression>().Keyed<IExpression>("*");
+            builder.RegisterType<DivisionExpression>().Keyed<IExpression>("/");
+            builder.RegisterType<AdditionExpression>().Keyed<IExpression>("+");
+            builder.RegisterType<NumberExpression>().Keyed<IExpression>("num");
+
+            IContainer container = builder.Build();
+
+            // 1 * (4 - 5) / 6 + 10
+            var num1 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 1m));
+            var num4 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 4m));
+            var num5 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 5m));
+            var num6 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 6m));
+            var num10 = container.ResolveKeyed<IExpression>("num", new NamedParameter("number", 10m));
+
+            var subtraction = container.ResolveKeyed<IExpression>("-",
+                new NamedParameter("left", num4),
+                new NamedParameter("right", num5));
+
+            var multiplication = container.ResolveKeyed<IExpression>("*",
+                new NamedParameter("left", num1),
+                new NamedParameter("right", subtraction));
+
+            var division = container.ResolveKeyed<IExpression>("/",
+                new NamedParameter("left", multiplication),
+                new NamedParameter("right", num6));
+
+            var addition = container.ResolveKeyed<IExpression>("+",
+                new NamedParameter("left", division),
+                new NamedParameter("right", num10));
+
+            var result = addition.Evaluate(); // Output: 9.8333
+        }
     }
 }
