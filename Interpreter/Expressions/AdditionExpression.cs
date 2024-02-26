@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Interpreter.Expressions
 {
-    public class SumExpression : IExpression
+    public class AdditionExpression : IExpression
     {
         private readonly IExpression _left;
         private readonly IExpression _right;
 
-        public SumExpression(IExpression left, IExpression right)
+        public AdditionExpression(IExpression left, IExpression right)
         {
             this._left = left;
             this._right = right;

@@ -21,7 +21,7 @@ namespace Interpreter
             builder.RegisterType<SubtractionExpression>().Keyed<IExpression>("-");
             builder.RegisterType<MultiplicationExpression>().Keyed<IExpression>("*");
             builder.RegisterType<DivisionExpression>().Keyed<IExpression>("/");
-            builder.RegisterType<SumExpression>().Keyed<IExpression>("+");
+            builder.RegisterType<AdditionExpression>().Keyed<IExpression>("+");
             builder.RegisterType<NumberExpression>().Keyed<IExpression>("num");
 
             IContainer container = builder.Build();
@@ -45,11 +45,11 @@ namespace Interpreter
                 new NamedParameter("left", multiplication),
                 new NamedParameter("right", num6));
 
-            var sum = container.ResolveKeyed<IExpression>("+",
+            var addition = container.ResolveKeyed<IExpression>("+",
                 new NamedParameter("left", division),
                 new NamedParameter("right", num10));
 
-            var result = sum.Evaluate(); // Output: 9.8333
+            var result = addition.Evaluate(); // Output: 9.8333
         }
 
         private static void MathematicalExpressionExample1()
@@ -58,9 +58,9 @@ namespace Interpreter
             var subtraction = new SubtractionExpression(new NumberExpression(4), new NumberExpression(5));
             var multiplication = new MultiplicationExpression(new NumberExpression(1), subtraction);
             var division = new DivisionExpression(multiplication, new NumberExpression(6));
-            var sum = new SumExpression(division, new NumberExpression(10));
+            var addition = new AdditionExpression(division, new NumberExpression(10));
 
-            var result = sum.Evaluate(); // Output: 9.8333
+            var result = addition.Evaluate(); // Output: 9.8333
         }
 
         private static void MathematicalExpressionExample2()
@@ -70,9 +70,9 @@ namespace Interpreter
             var multiplication = new MultiplicationExpression(new NumberExpression(2), new NumberExpression(4));
             var mod = new ModExpression(multiplication, new NumberExpression(3));
             var division = new DivisionExpression(new NumberExpression(2), mod);
-            var sum = new SumExpression(division, new NumberExpression(2));
+            var addition = new AdditionExpression(division, new NumberExpression(2));
 
-            var result = sum.Evaluate(); // Output: 3
+            var result = addition.Evaluate(); // Output: 3
         }
 
     }
